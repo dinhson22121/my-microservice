@@ -3,13 +3,15 @@ package com.mymicroservices.customer;
 import org.springframework.stereotype.Service;
 
 @Service
-public record CustomerService() {
+public record CustomerService(CustomerRepository customerRepository) {
     public void regisCustomer(CustomerRegistrationRequest request) {
         Customer customerBuilder = Customer.builder()
-                .name(request.name())
+                .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
                 .phoneNumber(request.phoneNumber())
                 .build();
+
+        customerRepository.save(customerBuilder);
     }
 }
