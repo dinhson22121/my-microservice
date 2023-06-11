@@ -17,13 +17,13 @@ COPY customer ./customer
 RUN mvn dependency:go-offline -B
 
 # Build the Eureka submodule
-RUN cd eureka-server && mvn package -DskipTests && cd ..
+RUN cd eureka-server && mvn package spring-boot:repackage -DskipTests && cd ..
 
 # Build the Fraud submodule
-RUN cd fraud && mvn package -DskipTests && cd ..
+RUN cd fraud && mvn package spring-boot:repackage -DskipTests && cd ..
 
 # Build the Customer submodule
-RUN cd customer && mvn package -DskipTests && cd ..
+RUN cd customer && mvn package spring-boot:repackage -DskipTests && cd ..
 
 # Set the base image for the final stage
 FROM adoptopenjdk:16 AS runtime
@@ -32,13 +32,13 @@ FROM adoptopenjdk:16 AS runtime
 WORKDIR /app
 
 # Copy the built JAR files from the submodules
-COPY --from=build /app/eureka-server/target/eureka-server-1.0-SNAPSHOT.jar eureka-server-1.0-SNAPSHOT.jar
-COPY --from=build /app/fraud/target/fraud-1.0-SNAPSHOT.jar fraud-1.0-SNAPSHOT.jar
-COPY --from=build /app/customer/target/customer-1.0-SNAPSHOT.jar customer-1.0-SNAPSHOT.jar
+COPY --from=build /app/eureka-server/target/eureka-server-1.0-SNAPSHOT.jar eureka-server.jar
+COPY --from=build /app/fraud/target/fraud-1.0-SNAPSHOT.jar fraud.jar
+COPY --from=build /app/customer/target/customer-1.0-SNAPSHOT.jar customer.jar
 
 # Set the command to run each submodule
-CMD ["java", "-jar", "eureka-server.jar","fraud.jar", "customer.jar"]
-
+#CMD ["java", "-jar", "eureka-server.jar","&","java", "-jar", "fraud.jar","&","java", "-jar", "customer.jar"]
+CMD java -jar eureka-server.jar & java -jar fraud.jar & java -jar customer.jar
 # Expose necessary ports for each submodule
 # Modify these commands according to the ports required for each submodule
 EXPOSE 8761
