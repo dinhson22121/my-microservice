@@ -32,9 +32,9 @@ FROM adoptopenjdk:16 AS runtime
 WORKDIR /app
 
 # Copy the built JAR files from the submodules
-COPY --from=build /app/eureka-server/target/eureka-server.jar eureka-server.jar
-COPY --from=build /app/fraud/target/fraud.jar fraud.jar
-COPY --from=build /app/customer/target/customer.jar customer.jar
+COPY --from=build /app/eureka-server/target/eureka-server-1.0-SNAPSHOT.jar eureka-server-1.0-SNAPSHOT.jar
+COPY --from=build /app/fraud/target/fraud-1.0-SNAPSHOT.jar fraud-1.0-SNAPSHOT.jar
+COPY --from=build /app/customer/target/customer-1.0-SNAPSHOT.jar customer-1.0-SNAPSHOT.jar
 
 # Set the command to run each submodule
 CMD ["java", "-jar", "eureka-server.jar","fraud.jar", "customer.jar"]
