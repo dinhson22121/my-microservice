@@ -33,14 +33,17 @@ WORKDIR /app
 
 # Copy the built JAR files from the submodules
 COPY --from=build /app/eureka-server/target/eureka-server-1.0-SNAPSHOT.jar eureka-server.jar
+#ENTRYPOINT ["java", "-jar", "eureka-server.jar"]
+#EXPOSE 8761
 COPY --from=build /app/fraud/target/fraud-1.0-SNAPSHOT.jar fraud.jar
+#CMD java -jar fraud.jar
+#EXPOSE 8090
 COPY --from=build /app/customer/target/customer-1.0-SNAPSHOT.jar customer.jar
+#CMD java -jar customer.jar
+#EXPOSE 8089
 
 # Set the command to run each submodule
 #CMD ["java", "-jar", "eureka-server.jar","&","java", "-jar", "fraud.jar","&","java", "-jar", "customer.jar"]
-CMD java -jar eureka-server.jar & java -jar fraud.jar & java -jar customer.jar
+CMD java -jar eureka-server.jar -o -p 8761 & java -jar fraud.jar -o -p 8090 & java -jar customer.jar -o -p 8089
 # Expose necessary ports for each submodule
-# Modify these commands according to the ports required for each submodule
-EXPOSE 8761
-EXPOSE 8090
-EXPOSE 8089
+# Modify these commands according to the ports required for each submodule& java -jar fraud.jar -o -p 8090 & java -jar customer.jar -o -p 8089
